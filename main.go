@@ -44,7 +44,7 @@ func configure() {
 		port = "3000"
 	}
 
-	if bind, ok = os.LookupEnv("bind"); !ok {
+	if bind, ok = os.LookupEnv("BIND"); !ok {
 		bind = "0.0.0.0"
 	}
 
