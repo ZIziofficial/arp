@@ -1,13 +1,22 @@
-package main
+package reverse_proxy
 
 import (
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 
 	"github.com/google/uuid"
 )
+
+var debug bool
+
+func init() {
+	if os.Getenv("DEBUG") == "true" {
+		debug = true
+	}
+}
 
 func NewReverseProxy(backend string) (*httputil.ReverseProxy, error) {
 	var err error

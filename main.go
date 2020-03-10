@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jmervine/arp/reverse_proxy"
 )
 
 var (
@@ -20,7 +22,7 @@ func init() {
 func main() {
 	configure()
 
-	proxy, err := NewReverseProxy(backend)
+	proxy, err := reverse_proxy.NewReverseProxy(backend)
 	if err != nil {
 		log.Fatalf("at=main error=\"%v\"", err)
 	}
