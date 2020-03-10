@@ -2,14 +2,14 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
-
-	"github.com/jmervine/arp/pkg/proxy"
 )
 
 var (
-	backend string
-	rp      *proxy.Proxy
+	backend    string
+	port, bind string
+	debug      bool
 )
 
 func init() {
@@ -19,6 +19,16 @@ func init() {
 
 func main() {
 	configure()
+
+	proxy, err := NewReverseProxy(backend)
+	if err != nil {
+		log.Fatalf("at=main error=\"%v\"", err)
+	}
+
+	listen := bind + ":" + port
+
+	log.Printf("at=main listener=%s backend=%s", listen, backend)
+	log.Fatal(http.ListenAndServe(listen, proxy))
 }
 
 func configure() {
@@ -28,5 +38,15 @@ func configure() {
 		log.Fatal("BACKEND is required")
 	}
 
-	rp = &proxy.Proxy{Backend: backend}
+	if port, ok = os.LookupEnv("PORT"); !ok {
+		port = "3000"
+	}
+
+	if bind, ok = os.LookupEnv("bind"); !ok {
+		bind = "0.0.0.0"
+	}
+
+	if os.Getenv("DEBUG") == "true" {
+		debug = true
+	}
 }
